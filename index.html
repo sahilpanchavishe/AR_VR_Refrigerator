@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Domestic Refrigerator Lab · Exploded 3D</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E❄️%3C/text%3E%3C/svg%3E">
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+--bg:#eef3f8;--panel:#f8fbfe;--ink:#12263f;--mute:#4d6480;--line:#c4d3e4;--acc:#0b5cab;--hot:#c0392b;--grid:#d5e1ee}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0c1b2e;--panel:#10243b;--ink:#e6eef8;--mute:#93a9c4;--line:#24405f;--acc:#6bb6ff;--hot:#ff8a73;--grid:#16304c}}
+:root[data-theme="dark"]{--bg:#0c1b2e;--panel:#10243b;--ink:#e6eef8;--mute:#93a9c4;--line:#24405f;--acc:#6bb6ff;--hot:#ff8a73;--grid:#16304c}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 "Segoe UI",system-ui,sans-serif}
+.app{display:grid;grid-template-columns:1fr 350px;height:100%}
+#stage{position:relative;overflow:hidden;touch-action:none;cursor:grab;
+background:linear-gradient(var(--grid) 1px,transparent 1px) 0 0/32px 32px,linear-gradient(90deg,var(--grid) 1px,transparent 1px) 0 0/32px 32px,var(--bg)}
+#stage.cam{background:#000}
+#stage canvas{position:absolute;inset:0;width:100%;height:100%;z-index:1}
+#vid{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:none;z-index:0;pointer-events:none}
+#stage.cam #vid{display:block}
+.b{position:absolute;left:0;top:0;width:24px;height:24px;margin:-12px 0 0 -12px;border-radius:50%;border:2px solid var(--acc);background:var(--panel);color:var(--ink);font:700 12px/1 inherit;padding:0;cursor:pointer;z-index:2}
+.b.on{background:var(--hot);color:#fff;border-color:var(--hot)}
+.hud{position:absolute;left:12px;bottom:12px;right:12px;z-index:3;pointer-events:none;font-size:13px;color:var(--mute)}
+aside{overflow:auto;background:var(--panel);border-left:2px solid var(--line);padding:14px 16px 24px}
+h1{font-size:20px;margin:0 0 2px}
+.sub{color:var(--mute);margin:0 0 12px;font-size:13px}
+.chips{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin:8px 0}
+button.chip{border:1.5px solid var(--line);border-radius:4px;padding:6px 1px;text-align:center;font:inherit;font-size:11.5px;background:transparent;color:var(--ink);cursor:pointer}
+button.chip:hover,button.chip:focus-visible{background:var(--grid);outline:none}
+.chip.on{background:var(--acc);border-color:var(--acc);color:var(--bg);font-weight:700}
+#why{min-height:4.2em;margin:0 0 10px;font-size:13px;color:var(--mute)}
+label{display:flex;justify-content:space-between;font-size:13px;margin-top:10px}
+input[type=range]{width:100%;accent-color:var(--acc)}
+.leg{font-size:12px;color:var(--mute);margin-top:4px}
+.leg i{display:inline-block;width:10px;height:10px;border-radius:50%;margin:0 3px 0 6px;vertical-align:-1px}
+.row{display:flex;gap:6px;flex-wrap:wrap;margin:12px 0 6px}
+button.t{flex:1 1 44%;border:1.5px solid var(--acc);background:transparent;color:var(--acc);border-radius:4px;padding:8px 6px;font:600 13px inherit;cursor:pointer;min-width:120px}
+button.t:hover,button.t:focus-visible{background:var(--acc);color:var(--bg);outline:none}
+#ds{font-size:12px;color:var(--mute)}
+h2{font-size:14px;margin:16px 0 6px;border-bottom:1.5px solid var(--line);padding-bottom:4px}
+ol{list-style:none;margin:0;padding:0}
+li button{display:flex;gap:8px;width:100%;text-align:left;background:none;border:0;border-bottom:1px solid var(--line);color:var(--ink);padding:6px 2px;font:inherit;cursor:pointer}
+li button:hover,li button:focus-visible{background:var(--grid);outline:none}
+li b{flex:0 0 22px;color:var(--acc)}
+li.on button{background:var(--grid);font-weight:600}
+#info{background:var(--grid);border-left:4px solid var(--hot);padding:8px 10px;margin-top:8px;font-size:13px}
+.g{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.g input{width:100%;padding:5px;border:1.5px solid var(--line);border-radius:4px;background:var(--bg);color:var(--ink);font:inherit}
+.g span{font-size:11px;color:var(--mute)}
+.read{display:grid;grid-template-columns:1fr auto;gap:2px 8px;font-size:13px;margin-top:8px}
+.read b{text-align:right}
+@media (max-width:820px){.app{grid-template-columns:1fr;grid-template-rows:56% 44%}aside{border-left:0;border-top:2px solid var(--line)}}
+</style>
+</head>
+<body>
+<div class="app">
+<div id="stage"><video id="vid" playsinline muted></video><div class="hud" id="hud">Drag to turn · scroll or pinch to zoom · tap a number for the part</div></div>
+<aside>
+<h1>Domestic refrigerator, taken apart</h1>
+<p class="sub">Vapour-compression cycle · Refrigeration Lab · COEP Tech</p>
+<div class="chips" id="chips"><button class="chip">Compression</button><button class="chip">Condensation</button><button class="chip">Expansion</button><button class="chip">Evaporation</button></div>
+<p id="why"></p>
+<label>Explode <span id="eV">0%</span></label><input type="range" id="ex" min="0" max="100" value="0" aria-label="Explode">
+<label>Refrigerant flow <span id="fV">50%</span></label><input type="range" id="fl" min="0" max="100" value="50" aria-label="Refrigerant flow speed">
+<div class="leg">Dots show the refrigerant:<i style="background:#ff3b2f"></i>hot vapour<i style="background:#ff9a3c"></i>warm liquid<i style="background:#58c4ff"></i>cold, low pressure. They appear while the parts are assembled.</div>
+<div class="row"><button class="t" id="bf">Open freezer door</button><button class="t" id="br">Open fridge door</button><button class="t" id="bb">Open both doors</button><button class="t" id="bc">Compressor: on</button><button class="t" id="vw">Back view</button><button class="t" id="step">Next stage</button><button class="t" id="cam">Overlay on camera</button><button class="t" id="th">Light/dark</button></div>
+<div id="ds"></div>
+<h2>Parts</h2><ol id="list"></ol><div id="info">Pick a part to see what it does.</div>
+<h2>Cycle numbers</h2>
+<div class="g"><div><span>Evaporator °C</span><input id="te" type="number" value="-25"></div><div><span>Condenser °C</span><input id="tc" type="number" value="45"></div><div><span>Cooling capacity W</span><input id="qc" type="number" value="100" min="1"></div><div><span>Compressor input W</span><input id="pw" type="number" value="70" min="1"></div></div>
+<div class="read"><span>Carnot COP = Te / (Tc − Te)</span><b id="cc"></b><span>Actual COP = Q / W</span><b id="ac"></b><span>Second-law efficiency</span><b id="et"></b><span>Heat rejected = Q + W</span><b id="qr"></b></div>
+<p class="sub" style="margin-top:10px">Schematic model, not to scale. Temperatures are in °C and are converted to kelvin for the Carnot value. Replace the sample numbers with your refrigerator's readings.</p>
+</aside>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+const T=THREE,V=(x,y,z)=>new T.Vector3(x,y,z),$=id=>document.getElementById(id);
+const stage=$("stage");
+const rdr=new T.WebGLRenderer({antialias:true,alpha:true});rdr.setPixelRatio(Math.min(devicePixelRatio,2));stage.prepend(rdr.domElement);
+const scene=new T.Scene(),cm3=new T.PerspectiveCamera(35,1,.1,100);
+scene.add(new T.AmbientLight(0xffffff,.75));
+let dl=new T.DirectionalLight(0xffffff,.9);dl.position.set(5,8,6);scene.add(dl);
+dl=new T.DirectionalLight(0xffffff,.35);dl.position.set(-6,3,-6);scene.add(dl);
+const lampL=new T.PointLight(0xfff2cc,0,6);scene.add(lampL);
+
+const P=[],meshes=[],H=Math.PI/2;
+const box=(x,y,z)=>new T.BoxGeometry(x,y,z),cyl=(r,h,s=24)=>new T.CylinderGeometry(r,r,h,s);
+function part(name,desc,off,ax,o={}){const g=new T.Group(),pv=new T.Group();g.add(pv);const b=o.base||[0,0,0];g.position.set(...b);
+const an=new T.Object3D();an.position.set(...ax);pv.add(an);scene.add(g);
+const q={name,desc,g,pv,base:V(...b),off:V(...off),anchor:an,mats:[]};P.push(q);return q}
+function mk(q,geo,color,pos,o={}){const tr=o.t!=null;
+const m=new T.MeshStandardMaterial({color,metalness:.35,roughness:.55,transparent:tr,opacity:tr?o.t:1,side:T.DoubleSide,depthWrite:!tr});
+const me=new T.Mesh(geo,m);if(pos)me.position.set(...pos);if(o.rx)me.rotation.x=o.rx;if(o.ry)me.rotation.y=o.ry;if(o.rz)me.rotation.z=o.rz;
+if(o.e!==false)me.add(new T.LineSegments(new T.EdgesGeometry(geo,30),new T.LineBasicMaterial({color:0x6f8fb5,transparent:true,opacity:.55})));
+q.pv.add(me);q.mats.push(m);me.userData.p=q;meshes.push(me);return me}
+function openBox(q,x0,x1,y0,y1,z0,z1,th,color,t){const w=x1-x0,h=y1-y0,d=z1-z0,cx=(x0+x1)/2,cy=(y0+y1)/2,cz=(z0+z1)/2;
+mk(q,box(th,h,d),color,[x0+th/2,cy,cz],{t});mk(q,box(th,h,d),color,[x1-th/2,cy,cz],{t});
+mk(q,box(w,h,th),color,[cx,cy,z0+th/2],{t});
+mk(q,box(w,th,d),color,[cx,y0+th/2,cz],{t});mk(q,box(w,th,d),color,[cx,y1-th/2,cz],{t})}
+function tube(q,pts,color,r){const cv=new T.CatmullRomCurve3(pts,false,"centripetal");
+mk(q,new T.TubeGeometry(cv,Math.max(12,pts.length*6),r,8,false),color,null,{e:false});return cv}
+function serp(x0,x1,y0,n,dy,z,startRight){const pts=[],r=dy/2;
+for(let i=0;i<n;i++){const y=y0-dy*i,dir=((i%2===0)===startRight)?-1:1,a=dir<0?x1:x0,b=dir<0?x0:x1;
+for(let k=0;k<=4;k++)pts.push(V(a+(b-a)*k/4,y,z));
+if(i<n-1){const s=Math.sign(b);for(let k=1;k<=5;k++){const f=Math.PI*k/6;pts.push(V(b+s*r*Math.sin(f),y-r*(1-Math.cos(f)),z))}}}
+return pts}
+const C=h=>new T.Color(h);
+
+/* 1 Outer cabinet */
+let q=part("Outer cabinet (steel shell)","Pre-coated steel box that gives the refrigerator its shape and carries every other part. Its back holds the rear condenser. Shown see-through.",[-2.7,0,0],[.98,3.6,.3]);
+openBox(q,-1,1,0,4.4,-.8,.8,.04,0xc9d6e3,.2);
+/* 2 Liner and insulation */
+q=part("Inner liner and PUF insulation","A moulded plastic liner lines the food space. The gap behind it is filled with polyurethane foam (yellow) that slows heat leaking in from the room. A partition splits freezer from fresh-food section.",[0,0,0],[-.86,2.0,.5]);
+openBox(q,-.86,.86,.1,4.26,-.66,.8,.03,0xeaf2f8,.3);
+openBox(q,-.96,.96,.04,4.36,-.76,.8,.1,0xf2d675,.15);
+mk(q,box(1.72,.05,1.46),0xeaf2f8,[0,3.2,.07],{t:.45});
+/* doors */
+function door(name,desc,yc,h,off,hh,hy){const d=part(name,desc,off,[-1.8,hy,.16],{base:[1,yc,.88]});
+mk(d,box(2,h,.14),0xe4ebf2,[-1,0,0]);
+const gz=-.085,gc=0x2c3a47;
+mk(d,box(1.9,.06,.03),gc,[-1,h/2-.06,gz],{e:false});mk(d,box(1.9,.06,.03),gc,[-1,-h/2+.06,gz],{e:false});
+mk(d,box(.06,h-.12,.03),gc,[-.07,0,gz],{e:false});mk(d,box(.06,h-.12,.03),gc,[-1.93,0,gz],{e:false});
+mk(d,box(.07,hh,.07),0x9aa4ad,[-1.8,hy,.14]);
+[hy+hh/2-.08,hy-hh/2+.08].forEach(y=>mk(d,box(.05,.05,.1),0x7f8a94,[-1.8,y,.1],{e:false}));
+return d}
+const FD=door("Freezer door","Insulated door of the freezer section, hinged at the right. A magnetic rubber gasket around its inner edge seals it against the cabinet.",3.8,1.1,[0,.9,2.4],.5,-.3);
+const RD=door("Fresh-food door","Insulated main door, hinged at the right. The gasket seals the edge, the bins on the inside hold bottles and jars, and closing it presses the lamp switch.",1.65,3.1,[0,-.2,2.4],1.3,.8);
+[-.6,.2,1.0].forEach(y=>{mk(RD,box(1.6,.03,.16),0x3e8fd0,[-1,y,-.16],{t:.6});mk(RD,box(1.6,.1,.02),0x3e8fd0,[-1,y+.05,-.24],{t:.6,e:false})});
+/* 5 Shelves */
+q=part("Glass shelves","Toughened glass shelves divide the fresh-food space. Gaps at the back let cold air circulate between them.",[0,0,1.5],[.84,1.95,.3]);
+[1.35,1.95,2.55].forEach(y=>{mk(q,box(1.68,.03,1.15),0x9ad3e0,[0,y,.025],{t:.5});mk(q,box(1.68,.05,.03),0x3e8fd0,[0,y+.02,.6])});
+/* 6 Crisper */
+q=part("Vegetable crisper drawer","Slide-out drawer with a glass cover. It keeps the air more humid so vegetables and fruit stay fresh longer.",[0,-.4,1.5],[.8,.5,.7]);
+mk(q,box(.03,.67,1.22),0xbfe0ea,[-.8,.515,.11],{t:.5});mk(q,box(.03,.67,1.22),0xbfe0ea,[.8,.515,.11],{t:.5});
+mk(q,box(1.6,.67,.03),0xbfe0ea,[0,.515,-.5],{t:.5});mk(q,box(1.6,.67,.03),0xbfe0ea,[0,.515,.72],{t:.5});
+mk(q,box(1.6,.03,1.22),0xbfe0ea,[0,.18,.11],{t:.5});mk(q,box(1.68,.03,1.3),0x9ad3e0,[0,.95,.1],{t:.5});
+mk(q,box(.3,.05,.05),0x9aa4ad,[0,.7,.76]);
+/* 7 Thermostat */
+q=part("Thermostat (temperature control)","The knob sets the cut-in and cut-out temperature. A sensing tube reads the cabinet temperature and switches the compressor on and off.",[1.5,.9,1.0],[.55,3.05,-.34]);
+mk(q,box(.5,.22,.25),0xdfe6ec,[.55,3.05,-.5]);mk(q,cyl(.07,.08,20),0x2c3a47,[.55,3.05,-.35],{rx:H});mk(q,box(.02,.02,.1),0xc0392b,[.55,3.11,-.31],{e:false});
+/* 8 Lamp */
+const lamp=part("Interior lamp and door switch","The lamp is wired through a switch. Opening the fridge door releases the switch plunger and lights the lamp; closing the door presses it and turns the lamp off.",[-.8,1.0,1.4],[0,3.04,-.3]);
+mk(lamp,box(.3,.1,.3),0xf4f4f0,[0,3.12,-.3]);mk(lamp,box(.07,.14,.06),0x2c3a47,[.8,3.0,.74]);mk(lamp,box(.04,.04,.06),0xc0392b,[.8,3.0,.79],{e:false});
+const bulb=new T.Mesh(new T.SphereGeometry(.07,12,10),new T.MeshBasicMaterial({color:0x777777}));bulb.position.set(0,3.04,-.3);lamp.pv.add(bulb);bulb.userData.p=lamp;meshes.push(bulb);
+/* 9 Evaporator */
+const evp=part("Evaporator (freezer coil)","Coil fixed to the freezer wall. Cold, low-pressure refrigerant boils inside it and soaks up heat from the compartment, which is what makes the freezer cold.",[0,1.4,.1],[.7,3.5,-.62]);
+mk(evp,box(1.55,.85,.02),0xcfe8f5,[0,3.775,-.655],{t:.55});
+const evpCv=tube(evp,serp(-.7,.7,4.1,4,.2,-.62,false),0x58b4e8,.028);
+/* 10 Capillary */
+const cap=part("Capillary tube","A long, very thin copper tube. It throttles the warm liquid from high to low pressure; part of it flashes to vapour and the mixture turns very cold.",[-1.2,0,-1.0],[-.52,.98,-.84]);
+const cp=[V(-.7,1.2,-.9),V(-.7,1.08,-.88)];
+for(let k=0;k<=40;k++){const f=Math.PI+4*Math.PI*k/40;cp.push(V(-.52+.09*Math.cos(f),.98+.09*Math.sin(f),-.86+.025*k/40))}
+cp.push(V(-.92,.9,-.84),V(-.92,1.2,-.84),V(-.92,3.6,-.84),V(-.9,3.9,-.82),V(-.85,4.02,-.76),V(-.78,4.08,-.68),V(-.7,4.1,-.62));
+const capCv=tube(cap,cp,0xb87333,.014);
+/* 11 Suction line */
+const suc=part("Suction line","Wider low-pressure tube that carries cold vapour from the evaporator back to the compressor. It often runs alongside the capillary tube to swap a little heat.",[-1.8,0,-1.4],[-.95,2.4,-.9]);
+const sucCv=tube(suc,[V(-.7,3.5,-.62),V(-.78,3.46,-.7),V(-.88,3.4,-.82),V(-.95,3.32,-.9),V(-.95,3.0,-.9),V(-.95,.6,-.9),V(-.9,.5,-.93),V(-.5,.47,-1.0),V(-.1,.45,-1.13),V(.13,.45,-1.2)],0x8cc7ea,.035);
+/* 12 Compressor */
+const cmp=part("Compressor (hermetic)","Sealed motor-compressor, shown cut-away. It draws in low-pressure vapour and squeezes it to high pressure and temperature. The thermostat switches it on and off, and it hums and vibrates while it runs.",[.4,-.1,-1.8],[.45,.5,-1.57]);
+mk(cmp,cyl(.32,.5,32),0x26303a,[.45,.45,-1.2],{t:.5});
+const dome=mk(cmp,new T.SphereGeometry(.32,32,12,0,Math.PI*2,0,Math.PI/2),0x26303a,[.45,.7,-1.2],{t:.5,e:false});dome.scale.y=.5;
+mk(cmp,cyl(.17,.26),0xb87333,[.45,.42,-1.2]);mk(cmp,cyl(.045,.3,12),0xaab4be,[.45,.64,-1.2]);
+mk(cmp,box(1,.03,.8),0x4f6275,[.45,.17,-1.2]);mk(cmp,box(.2,.16,.1),0x1b222a,[.45,.5,-1.57]);
+mk(cmp,cyl(.025,.14,10),0xb87333,[.07,.45,-1.2],{rz:H,e:false});mk(cmp,cyl(.02,.14,10),0xb87333,[.34,.9,-1.2],{e:false});
+const cmpCv=new T.CatmullRomCurve3([V(.13,.45,-1.2),V(.3,.48,-1.2),V(.45,.62,-1.2),V(.62,.74,-1.2),V(.74,.76,-1.2)],false,"centripetal");
+/* 13 Discharge line */
+const dis=part("Discharge line","Carries hot, high-pressure vapour from the compressor up to the top of the condenser. It is too hot to touch.",[1.4,0,-1.4],[.96,2.6,-.9]);
+const disCv=tube(dis,[V(.74,.76,-1.2),V(.76,.95,-1.18),V(.85,1.1,-1.0),V(.96,1.25,-.9),V(.96,2.0,-.9),V(.96,3.9,-.9),V(.9,4.02,-.9),V(.68,4.05,-.9)],0xd7462f,.03);
+/* 14 Condenser */
+const cnd=part("Condenser (rear coil)","Black wire-on-tube coil on the back of the cabinet. The hot vapour gives its heat to the room air and condenses to a warm liquid. Keep the back clear so air can flow past.",[0,0,-1.8],[0,3.2,-.95]);
+const cdp=serp(-.68,.68,4.05,9,.3,-.9,true);cdp.push(V(-.7,1.6,-.9));
+const cndCv=tube(cnd,cdp,0xc4623a,.03);
+for(let x=-.7;x<=.701;x+=.1)mk(cnd,cyl(.011,2.55,6),0x7f8a94,[x,2.85,-.945],{e:false});
+/* 15 Filter drier */
+const drr=part("Filter drier","Small canister holding desiccant and a mesh. It traps moisture and dirt so the capillary tube cannot freeze up or block.",[0,-.2,-2.5],[-.7,1.4,-.84]);
+mk(drr,cyl(.065,.4),0xc9a35a,[-.7,1.4,-.9]);mk(drr,cyl(.04,.06,12),0xb87333,[-.7,1.63,-.9],{e:false});mk(drr,cyl(.04,.06,12),0xb87333,[-.7,1.17,-.9],{e:false});
+const drrCv=new T.LineCurve3(V(-.7,1.6,-.9),V(-.7,1.2,-.9));
+/* 16 Tray */
+q=part("Defrost water tray","Frost that melts off the evaporator drains down to this tray above the compressor. The warm compressor evaporates the water.",[.7,-.5,-1.0],[.65,.95,-1.2]);
+mk(q,box(.8,.02,.55),0x8fa3b8,[.25,.91,-1.2],{t:.6});
+[-.14,.64].forEach(x=>mk(q,box(.02,.07,.55),0x8fa3b8,[x,.945,-1.2],{t:.6}));
+[-1.475,-.925].forEach(z=>mk(q,box(.8,.07,.02),0x8fa3b8,[.25,.945,z],{t:.6}));
+/* 17 Feet */
+q=part("Levelling feet","Adjustable feet level the refrigerator so the doors close properly and the compressor sits steady.",[0,-.9,0],[.8,-.06,.55]);
+[[-.8,-.55],[.8,-.55],[-.8,.55],[.8,.55]].forEach(([x,z])=>{mk(q,cyl(.1,.12,16),0x2c3a47,[x,-.06,z]);mk(q,cyl(.16,.03,16),0x4f6275,[x,.0,z],{e:false})});
+
+/* refrigerant loop for the flow dots */
+const loop=[
+{cv:cmpCv,q:cmp,c0:C(0x7fbfff),c1:C(0xff5a3c)},{cv:disCv,q:dis,c0:C(0xff3b2f),c1:C(0xff3b2f)},
+{cv:cndCv,q:cnd,c0:C(0xff3b2f),c1:C(0xff9a3c)},{cv:drrCv,q:drr,c0:C(0xff9a3c),c1:C(0xff9a3c)},
+{cv:capCv,q:cap,c0:C(0xff9a3c),c1:C(0x58c4ff)},{cv:evpCv,q:evp,c0:C(0x58c4ff),c1:C(0x9ad8ff)},
+{cv:sucCv,q:suc,c0:C(0x9ad8ff),c1:C(0x7fbfff)}];
+let LT=0;loop.forEach(s=>{s.len=s.cv.getLength();s.a=LT;LT+=s.len});
+const N=90,dots=[];for(let i=0;i<N;i++){const d=new T.Mesh(new T.SphereGeometry(.045,8,6),new T.MeshBasicMaterial({color:0xffffff}));scene.add(d);dots.push(d)}
+
+/* parts list, badges, picking */
+let sel=null,stg=-1;
+P.forEach((p,i)=>{const b=document.createElement("button");b.className="b";b.textContent=i+1;b.setAttribute("aria-label",p.name);b.onclick=e=>{e.stopPropagation();pick(p)};stage.appendChild(b);p.badge=b;
+const li=document.createElement("li");li.innerHTML="<button><b>"+(i+1)+"</b><span>"+p.name+"</span></button>";li.firstChild.onclick=()=>pick(p);$("list").appendChild(li);p.li=li});
+const stSets=[[cmp,dis],[cnd,drr],[cap],[evp,suc]];
+const hint="Tap a stage to see where it happens, or tap any part to see what it does.";
+const why=["Compression: the compressor draws in cold low-pressure vapour and squeezes it into hot high-pressure vapour.","Condensation: the condenser at the back gives heat to the room air, so the vapour turns to warm liquid. The filter drier cleans it.","Expansion: the capillary tube drops the pressure sharply, so the liquid turns very cold.","Evaporation: the evaporator in the freezer absorbs heat and boils the refrigerant to vapour. The suction line returns it to the compressor."];
+const chips=[...$("chips").children];
+function hl(){const ss=stg<0?[]:stSets[stg];
+P.forEach(z=>{const s=z===sel,g=ss.includes(z);z.badge.classList.toggle("on",s);z.li.classList.toggle("on",s);
+z.mats.forEach(m=>{m.emissive.setHex(s?0xff9a00:g?0x118c8c:0);m.emissiveIntensity=s?.55:g?.5:0})});
+$("info").innerHTML=sel?"<b>"+(P.indexOf(sel)+1)+" · "+sel.name+"</b><br>"+sel.desc:"Pick a part to see what it does.";
+$("why").textContent=stg<0?hint:why[stg];chips.forEach((c,i)=>c.classList.toggle("on",i===stg))}
+function pick(p){sel=sel===p?null:p;hl()}
+chips.forEach((c,i)=>c.onclick=()=>{stg=stg===i?-1:i;hl()});
+$("step").onclick=()=>{stg=(stg+1)%4;hl()};
+hl();
+
+/* doors, compressor, view */
+const MAXA=1.85,door2={f:{t:0,a:0,p:FD},r:{t:0,a:0,p:RD}};
+let on=!matchMedia("(prefers-reduced-motion:reduce)").matches,flow=0,e=0,yaw=-.55,yawT=-.55,pit=.18,zoom=1,last=0,back=false;
+function ub(){const f=door2.f.t,r=door2.r.t;$("bf").textContent=f?"Close freezer door":"Open freezer door";$("br").textContent=r?"Close fridge door":"Open fridge door";
+$("bb").textContent=f&&r?"Close both doors":"Open both doors";
+$("ds").textContent="Freezer door "+(f?"open":"closed")+" · fridge door "+(r?"open, lamp on":"closed, lamp off")}
+$("bf").onclick=()=>{door2.f.t=door2.f.t?0:1;ub()};
+$("br").onclick=()=>{door2.r.t=door2.r.t?0:1;ub()};
+$("bb").onclick=()=>{const v=door2.f.t&&door2.r.t?0:1;door2.f.t=door2.r.t=v;ub()};
+$("bc").textContent=on?"Compressor: on":"Compressor: off";
+$("bc").onclick=()=>{on=!on;$("bc").textContent=on?"Compressor: on":"Compressor: off"};
+function setYaw(v){while(v-yaw>Math.PI)v-=2*Math.PI;while(v-yaw<-Math.PI)v+=2*Math.PI;yawT=v}
+$("vw").onclick=()=>{back=!back;setYaw(back?Math.PI+.4:-.55);pit=back?.2:.18;$("vw").textContent=back?"Front view":"Back view"};
+ub();
+
+const tmp=V(0,0,0);
+function frame(t){requestAnimationFrame(frame);const dt=Math.min((t-last)/1000,.1);last=t;
+e+=($("ex").value/100-e)*Math.min(1,dt*6);
+P.forEach(p=>p.g.position.copy(p.base).addScaledVector(p.off,e));
+for(const k in door2){const d=door2[k];d.a+=(d.t*MAXA-d.a)*Math.min(1,dt*4);d.p.pv.rotation.y=d.a}
+const lo=door2.r.a>.05;bulb.material.color.setHex(lo?0xfff1a8:0x777777);lampL.intensity=lo?.9:0;lampL.position.set(0,2.95,-.3).add(lamp.g.position);
+if(on){flow+=dt*$("fl").value/100*.15;cmp.pv.position.set(Math.sin(t*.09)*.004,Math.cos(t*.13)*.003,0)}else cmp.pv.position.set(0,0,0);
+const vis=e<.04;
+dots.forEach((d,k)=>{d.visible=vis;if(!vis)return;
+const s=(((k/N+flow)%1)+1)%1*LT;let sg=loop[loop.length-1];for(let i=0;i<loop.length;i++){if(s<loop[i].a+loop[i].len){sg=loop[i];break}}
+const l=Math.min(.9999,Math.max(0,(s-sg.a)/sg.len));d.position.copy(sg.cv.getPointAt(l)).add(sg.q.g.position);d.material.color.copy(sg.c0).lerp(sg.c1,l)});
+yaw+=(yawT-yaw)*Math.min(1,dt*4);
+const w=stage.clientWidth,h=stage.clientHeight,asp=w/h;
+const tg=V(-.6*e,2.3+.3*e,-.4*e),dist=(10.5+6.5*e)*zoom*Math.max(1,.9/asp);
+cm3.position.set(tg.x+dist*Math.sin(yaw)*Math.cos(pit),tg.y+dist*Math.sin(pit),tg.z+dist*Math.cos(yaw)*Math.cos(pit));cm3.lookAt(tg);
+scene.updateMatrixWorld();cm3.updateMatrixWorld();
+P.forEach(p=>{p.anchor.getWorldPosition(tmp);tmp.project(cm3);p.badge.style.display=tmp.z>1?"none":"";p.badge.style.transform="translate("+((tmp.x+1)/2*w)+"px,"+((1-tmp.y)/2*h)+"px)"});
+rdr.render(scene,cm3)}
+function size(){const w=stage.clientWidth,h=stage.clientHeight;rdr.setSize(w,h);cm3.aspect=w/h;cm3.updateProjectionMatrix()}
+new ResizeObserver(size).observe(stage);size();requestAnimationFrame(frame);
+
+/* drag, pinch, wheel, tap */
+let dn=null,moved=0;const cv2=rdr.domElement,pts=new Map();let pd=0;
+cv2.addEventListener("pointerdown",ev=>{cv2.setPointerCapture(ev.pointerId);pts.set(ev.pointerId,[ev.clientX,ev.clientY]);dn=[ev.clientX,ev.clientY];moved=0;pd=0});
+cv2.addEventListener("pointermove",ev=>{if(!pts.has(ev.pointerId))return;const o=pts.get(ev.pointerId);
+if(pts.size===2){const k=[...pts.keys()],qq=pts.get(k[0]===ev.pointerId?k[1]:k[0]);const n=Math.hypot(ev.clientX-qq[0],ev.clientY-qq[1]);if(pd)zoom=Math.min(2.2,Math.max(.4,zoom*pd/n));pd=n}
+else{yaw-=(ev.clientX-o[0])*.008;yawT=yaw;pit=Math.max(-.2,Math.min(1.3,pit+(ev.clientY-o[1])*.006))}
+moved+=Math.abs(ev.clientX-o[0])+Math.abs(ev.clientY-o[1]);pts.set(ev.pointerId,[ev.clientX,ev.clientY])});
+cv2.addEventListener("pointerup",ev=>{pts.delete(ev.pointerId);pd=0;if(moved<6&&dn){const r=cv2.getBoundingClientRect(),rc=new T.Raycaster();rc.setFromCamera({x:(ev.clientX-r.left)/r.width*2-1,y:-((ev.clientY-r.top)/r.height)*2+1},cm3);const hh=rc.intersectObjects(meshes,false)[0];if(hh)pick(hh.object.userData.p)}dn=null});
+cv2.addEventListener("pointercancel",ev=>pts.delete(ev.pointerId));
+cv2.addEventListener("wheel",ev=>{ev.preventDefault();zoom=Math.min(2.2,Math.max(.4,zoom*(1+ev.deltaY*.001)))},{passive:false});
+
+/* controls */
+$("ex").oninput=()=>$("eV").textContent=$("ex").value+"%";
+$("fl").oninput=()=>$("fV").textContent=$("fl").value+"%";
+$("th").onclick=()=>{const r=document.documentElement,d=r.dataset.theme?r.dataset.theme==="dark":matchMedia("(prefers-color-scheme:dark)").matches;r.dataset.theme=d?"light":"dark"};
+let stream=null;
+$("cam").onclick=async()=>{if(stream){stream.getTracks().forEach(t=>t.stop());stream=null;stage.classList.remove("cam");$("cam").textContent="Overlay on camera";return}
+try{stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:"environment"}});$("vid").srcObject=stream;await $("vid").play();stage.classList.add("cam");$("cam").textContent="Stop camera"}
+catch(x){$("hud").textContent="Camera not available here. Open this page directly in your phone browser and allow camera access."}};
+if(location.hash==="#ar"){$("cam").style.outline="3px solid var(--hot)";$("hud").textContent="Tap Overlay on camera, allow the camera, then drag to turn the refrigerator."}
+
+/* cycle numbers */
+function calc(){const te=+$("te").value+273.15,tc=+$("tc").value+273.15,Q=+$("qc").value,W=+$("pw").value;
+if(!(tc>te&&Q>0&&W>0&&te>0)){["cc","ac","et","qr"].forEach(i=>$(i).textContent="–");return}
+const cc=te/(tc-te),ac=Q/W;
+$("cc").textContent=cc.toFixed(2);$("ac").textContent=ac.toFixed(2);$("et").textContent=(ac/cc*100).toFixed(0)+" %";$("qr").textContent=(Q+W).toFixed(0)+" W"}
+["te","tc","qc","pw"].forEach(i=>$(i).oninput=calc);calc();
+</script>
+</body>
+</html>
